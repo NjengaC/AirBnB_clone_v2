@@ -107,3 +107,23 @@ class test_fileStorage(unittest.TestCase):
         from models.engine.file_storage import FileStorage
         print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+    def test_delete(self):
+        """ Test delete method """
+        new = BaseModel()
+        storage.save()
+        key = 'BaseModel' + '.' + new.id
+        del_obj = storage.get("BaseModel", new.id)
+        self.assertIsNotNone(del_obj)
+        storage.delete(del_obj)
+        self.assertNotIn(key, storage.all())
+
+    def test_all_with_cls(self):
+        """ Test all method with class filtering """
+        new = BaseModel()
+        all_objs = storage.all()
+        objs_of_base_model = storage.all(BaseModel)
+        self.assertTrue(all_objs)
+        self.assertEqual(len(all_objs), len(objs_of_base_model))
+
+if __name__ == "__main__":
+    unittest.main()

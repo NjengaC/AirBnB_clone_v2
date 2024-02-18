@@ -8,6 +8,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+import shlex
 
 class FileStorage:
     """This class manages storage of hbnb models in JSON format"""
@@ -16,14 +17,17 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
+        filtered = {}
         if cls is None:
             return self.__objects
         else:
-            filtered_objects = {}
-            for key, obj in self.__objects.items():
-                if type(obj) == cls:
-                    filtered_objects[key] = obj
-            return filtered_objects
+            filtered_objects = self.__objects
+            for key in filtered_objects:
+                part = key.replace('.', ' ')
+                part = shlex.split(part)
+                if part[0] == cls.__name__:
+                    filtered[key] = self.__objects[key]
+            return filtered
 
     def new(self, obj):
         """Adds new object to storage dictionary"""

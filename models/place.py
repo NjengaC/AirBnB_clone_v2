@@ -36,6 +36,7 @@ class Place(BaseModel, Base):
     if getenv("HBNB_TYPE_STORAGE") == "db":
         reviews = relationship("Review", cascade="all, delete,\
                                delete-orphan", backref="place")
+        place_amenity_ids = []
         amenities = relationship("Amenity", secondary=place_amenity,
                                  viewonly=False,
                                  back_populates="place_amenities")
@@ -67,3 +68,4 @@ class Place(BaseModel, Base):
         """ Appends amenity ids to the attribute """
         if type(obj) is Amenity and obj.id not in self.amenity_ids:
             self.amenity_ids.append(obj.id)
+#        session.add(obj)

@@ -19,7 +19,7 @@ place_amenity = Table("place_amenity", Base.metadata,
 
 
 class Place(BaseModel, Base):
-    """ A place to stay """
+    """ class place"""
     __tablename__ = "places"
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
     user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
@@ -32,3 +32,38 @@ class Place(BaseModel, Base):
     latitude = Column(Float)
     longitude = Column(Float)
     amenity_ids = []
+
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        reviews = relationship("Review", cascade="all, delete,\
+                               delete-orphan", backref="place")
+        amenities = relationship("Amenity", secondary=place_amenity,
+                                 viewonly=False,
+                                 back_populates="place_amenities")
+
+    else:
+        @property
+        def reviews(self):
+            """ Returns list of reviews.id """
+            dic = models.storage.all()
+            lists = []
+            result_list = []
+            for key in dic:
+                review = key.replace('.', ' ')
+                review = shlex.split(review)
+                if review[0] == 'Review':
+                    lists.append(dic[key])
+            for lis in lists:
+                if lis.place_id == self.id:
+                    result_list.append(lis)
+            return (result_list)
+
+    @property
+    def amenities(self):
+        """Gets amenities id"""
+        return self.amenity_ids
+
+    @amenities.setter
+    def amenities(self, obj=None):
+        """ Appends amenity ids to the attribute """
+        if type(obj) is Amenity and obj.id not in self.amenity_ids:
+            self.amenity_ids.append(obj.id)

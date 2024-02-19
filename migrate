@@ -1,5 +1,0 @@
-# Generate a migration script
-alembic revision --autogenerate -m "Add nullable columns to User"
-
-# Apply the migration
-alembic upgrade head

@@ -155,7 +155,7 @@ class HBNBCommand(cmd.Cmd):
 #            print("Storage is FS")
 #            storage = FileStorage()
         print(new_instance.id)
-#        new_instance.save()
+        new_instance.save()
         storage.save()
 
     def help_create(self):

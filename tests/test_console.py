@@ -20,6 +20,7 @@ from models import storage
 import sqlalchemy
 import MySQLdb
 
+
 class TestConsole(unittest.TestCase):
     """this will test the console"""
 
@@ -80,6 +81,7 @@ class TestConsole(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             with self.assertRaises(SystemExit):
                 self.consol.onecmd("quit")
+
     @unittest.skipIf(
         os.getenv('HBNB_TYPE_STORAGE') == 'db', 'FileStorage test')
     def test_create(self):

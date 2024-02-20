@@ -7,6 +7,7 @@ from sqlalchemy import Column, Table, String, Integer, Float, ForeignKey
 from os import getenv
 import models
 import shlex
+
 place_amenity = Table("place_amenity", Base.metadata,
                       Column("place_id", String(60),
                              ForeignKey("places.id"),
@@ -36,7 +37,7 @@ class Place(BaseModel, Base):
     if getenv("HBNB_TYPE_STORAGE") == "db":
         reviews = relationship("Review", cascade="all, delete,\
                                delete-orphan", backref="place")
-        place_amenity_ids = []
+
         amenities = relationship("Amenity", secondary=place_amenity,
                                  viewonly=False,
                                  back_populates="place_amenities")
@@ -58,14 +59,14 @@ class Place(BaseModel, Base):
                     result_list.append(lis)
             return (result_list)
 
-    @property
-    def amenities(self):
-        """Gets amenities id"""
-        return self.amenity_ids
+        @property
+        def amenities(self):
+            """Gets amenities id"""
+            return self.amenity_ids
 
-    @amenities.setter
-    def amenities(self, obj=None):
-        """ Appends amenity ids to the attribute """
-        if type(obj) is Amenity and obj.id not in self.amenity_ids:
-            self.amenity_ids.append(obj.id)
-#        session.add(obj)
+        @amenities.setter
+        def amenities(self, obj=None):
+            """ Appends amenity ids to the attribute """
+            if type(obj) is Amenity and obj.id not in self.amenity_ids:
+                self.amenity_ids.append(obj.id)
+            storage.save()

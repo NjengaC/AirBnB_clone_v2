@@ -160,6 +160,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, args):
         """ Method to show an individual object """
+        aah = None
         new = args.partition(" ")
         c_name = new[0]
         c_id = new[2]
@@ -182,8 +183,15 @@ class HBNBCommand(cmd.Cmd):
 
         key = c_name + "." + c_id
         try:
-            print(storage._FileStorage__objects[key])
-        except KeyError:
+            keyy = (storage.all()[key])
+            if 'Name' in keyy:
+                raise Exception
+            else:
+                print(keyy)
+        except Exception as ee:
+            aah = ee
+            pass
+        if aah is not None:
             print("** no instance found **")
 
     def help_show(self):
@@ -193,6 +201,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy(self, args):
         """ Destroys a specified object """
+        aah = None
         new = args.partition(" ")
         c_name = new[0]
         c_id = new[2]
@@ -216,7 +225,10 @@ class HBNBCommand(cmd.Cmd):
         try:
             del (storage.all()[key])
             storage.save()
-        except KeyError:
+        except Exception as ee:
+            aah = ee
+            pass
+        if aah is not None:
             print("** no instance found **")
 
     def help_destroy(self):

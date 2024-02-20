@@ -130,20 +130,21 @@ class HBNBCommand(cmd.Cmd):
         kwargs = {}
         for arg in args_list:
             if '=' in arg:
-                key, value = arg.split('=')
+                list_cur = arg.split('=')
+                key, value = list_cur[0], list_cur[1]
                 if value.startswith('"') and value.endswith('"'):
                     value = value[1:-1].replace('_', ' ').replace('\\"', '"')
-                elif '.' in value:
-                    try:
-                        value = float(value)
-                    except ValueError:
-                        continue
-                    else:
-                        try:
-                            value = int(value)
-                        except ValueError:
-                            continue
-                    kwargs[key] = value
+            elif '.' in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
+            kwargs[key] = value
 
         new_instance = HBNBCommand.classes[class_name](**kwargs)
         new_instance.save()

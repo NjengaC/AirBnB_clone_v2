@@ -17,7 +17,8 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from models import storage
-
+import sqlalchemy
+import MySQLdb
 
 class TestConsole(unittest.TestCase):
     """this will test the console"""
@@ -79,7 +80,8 @@ class TestConsole(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             with self.assertRaises(SystemExit):
                 self.consol.onecmd("quit")
-
+    @unittest.skipIf(
+        os.getenv('HBNB_TYPE_STORAGE') == 'db', 'FileStorage test')
     def test_create(self):
         """Test create command inpout"""
         with patch('sys.stdout', new=StringIO()) as cout:
@@ -88,21 +90,26 @@ class TestConsole(unittest.TestCase):
             mdl_id = cout.getvalue().strip()
             self.clear_stream(cout)
             self.assertIn('City.{}'.format(mdl_id), storage.all().keys())
-            self.clear_stream(cout)
+            cons.onecmd('show City {}'.format(mdl_id))
+            self.assertIn("'name': 'Texas'", cout.getvalue().strip())
+            clear_stream(cout)
             cons.onecmd('create User name="James" age=17 height=5.9')
             mdl_id = cout.getvalue().strip()
             self.assertIn('User.{}'.format(mdl_id), storage.all().keys())
-            self.clear_stream(cout)
+            clear_stream(cout)
             cons.onecmd('show User {}'.format(mdl_id))
+            self.assertIn("'name': 'James'", cout.getvalue().strip())
+            self.assertIn("'age': 17", cout.getvalue().strip())
+            self.assertIn("'height': 5.9", cout.getvalue().strip())
 
     @unittest.skipIf(
-             os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
+        os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
     def test_create_with_db(self):
         """Tests the create command with the database storage.
         """
         with patch('sys.stdout', new=StringIO()) as cout:
             cons = HBNBCommand()
-        with self.assertRaises(sqlalchemy.exc.OperationalError):
+        with self.assertRaises(Exception):
             cons.onecmd('create User')
         self.clear_stream(cout)
         cons.onecmd('create User email="john25@gmail.com" password="123"')

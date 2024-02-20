@@ -10,6 +10,8 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from models.engine.file_storage import FileStorage
+from models.engine.db_storage import DBStorage
 from os import getenv
 from models import storage
 
@@ -147,8 +149,14 @@ class HBNBCommand(cmd.Cmd):
             kwargs[key] = value
 
         new_instance = HBNBCommand.classes[class_name](**kwargs)
-        new_instance.save()
+#        if getenv("HBNB_TYPE_STORAGE") == "db":
+#            print("Storage is db")
+#            storage = DBStorage()
+#        else:
+#            print("Storage is FS")
+#            storage = FileStorage()
         print(new_instance.id)
+        new_instance.save()
         storage.save()
 
     def help_create(self):

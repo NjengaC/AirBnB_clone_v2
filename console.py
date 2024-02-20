@@ -148,14 +148,12 @@ class HBNBCommand(cmd.Cmd):
             kwargs[key] = value
 
         new_instance = HBNBCommand.classes[class_name](**kwargs)
-#        if getenv("HBNB_TYPE_STORAGE") == "db":
-#            print("Storage is db")
-#            storage = DBStorage()
-#        else:
-#            print("Storage is FS")
-#            storage = FileStorage()
+        if getenv("HBNB_TYPE_STORAGE") == "db":
+            storage.new(new_instance)
+            storage.save()
+        else:
+            new_instance.save()
         print(new_instance.id)
-        new_instance.save()
         storage.save()
 
     def help_create(self):

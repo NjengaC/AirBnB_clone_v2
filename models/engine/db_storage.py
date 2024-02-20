@@ -55,7 +55,6 @@ class DBStorage():
                     dictionary[k] = item
         return dictionary
 
-
     def new(self, obj):
         """adds an object to the current database session (self.__session)"""
         self.__session.add(obj)

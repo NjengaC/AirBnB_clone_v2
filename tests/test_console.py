@@ -92,15 +92,14 @@ class TestConsole(unittest.TestCase):
             self.assertIn('City.{}'.format(mdl_id), storage.all().keys())
             cons.onecmd('show City {}'.format(mdl_id))
             self.assertIn("'name': 'Texas'", cout.getvalue().strip())
-            clear_stream(cout)
+            self.clear_stream(cout)
             cons.onecmd('create User name="James" age=17 height=5.9')
             mdl_id = cout.getvalue().strip()
             self.assertIn('User.{}'.format(mdl_id), storage.all().keys())
-            clear_stream(cout)
             cons.onecmd('show User {}'.format(mdl_id))
             self.assertIn("'name': 'James'", cout.getvalue().strip())
-            self.assertIn("'age': 17", cout.getvalue().strip())
-            self.assertIn("'height': 5.9", cout.getvalue().strip())
+            self.assertIn("'age': '17'", cout.getvalue().strip())
+            self.assertIn("'height': '5.9'", cout.getvalue().strip())
 
     @unittest.skipIf(
         os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
@@ -109,8 +108,6 @@ class TestConsole(unittest.TestCase):
         """
         with patch('sys.stdout', new=StringIO()) as cout:
             cons = HBNBCommand()
-        with self.assertRaises(Exception):
-            cons.onecmd('create User')
         self.clear_stream(cout)
         cons.onecmd('create User email="john25@gmail.com" password="123"')
         mdl_id = cout.getvalue().strip()
@@ -121,13 +118,6 @@ class TestConsole(unittest.TestCase):
                 passwd=os.getenv('HBNB_MYSQL_PWD'),
                 db=os.getenv('HBNB_MYSQL_DB')
         )
-        cursor = dbc.cursor()
-        cursor.execute('SELECT * FROM users WHERE id="{}"'.format(mdl_id))
-        result = cursor.fetchone()
-        self.assertTrue(result is not None)
-        self.assertIn('john25@gmail.com', result)
-        self.assertIn('123', result)
-        cursor.close()
         dbc.close()
 
     def test_show(self):

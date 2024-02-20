@@ -132,8 +132,7 @@ class HBNBCommand(cmd.Cmd):
         kwargs = {}
         for arg in args_list:
             if '=' in arg:
-                list_cur = arg.split('=')
-                key, value = list_cur[0], list_cur[1]
+                key, value = arg.split('=')
                 if value.startswith('"') and value.endswith('"'):
                     value = value[1:-1].replace('_', ' ').replace('\\"', '"')
             elif '.' in value:
@@ -156,7 +155,7 @@ class HBNBCommand(cmd.Cmd):
 #            print("Storage is FS")
 #            storage = FileStorage()
         print(new_instance.id)
-        new_instance.save()
+#        new_instance.save()
         storage.save()
 
     def help_create(self):

@@ -25,11 +25,9 @@ config="server {
 
     location /hbnb_static/ {
         alias /data/web_static/current/;
-        index index.html index.htm;
 }
 }"
 if ! grep "/hbnb_static/" /etc/nginx/sites-available/default; then
 	sudo bash -c "echo '$config' >> /etc/nginx/sites-available/default"
 fi
-#sudo sed -i '39 i\ \tlocation /hbnb_static {\n\t\talias /data/web_static/current;\n\t}\n' /etc/nginx/sites-enabled/default
 sudo service nginx restart

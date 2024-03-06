@@ -27,10 +27,8 @@ def do_deploy(archive_path):
         run("sudo tar -xzf /tmp/{} -C {}/{}/"
             .format(new_archive, path, folder[0]))
         run("sudo rm /tmp/{}".format(archive))
-        if not run("test -e {}/{}/".format(path, folder[0]),
-                   quiet=True).succeeded:
-            run("sudo mv -f {}/{}/web_static/* {}/{}/"
-                .format(path, folder[0], path, folder[0]))
+        run("sudo mv -f {}/{}/web_static/* {}/{}/"
+            .format(path, folder[0], path, folder[0]))
         run("sudo rm -rf {}/{}/web_static".format(path, folder[0]))
         run("sudo rm -rf /data/web_static/current")
         run("sudo ln -sf {}/{} /data/web_static/current"

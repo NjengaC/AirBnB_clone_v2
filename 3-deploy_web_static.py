@@ -12,6 +12,7 @@ env.hosts = ['54.144.140.209', '34.202.233.3']
 env.user = 'ubuntu'
 created_path = None
 
+
 def do_pack():
     """
         generates a .tgz archine from contents of web_static
@@ -23,7 +24,7 @@ def do_pack():
         local("tar --create --verbose -z --file={} ./web_static"
               .format(file_name))
         return file_name
-    except:
+    except Exception:
         return None
 
 
@@ -50,7 +51,7 @@ def do_deploy(archive_path):
         run("ln -sf {}/{} /data/web_static/current"
             .format(path, folder[0]))
         return True
-    except:
+    except Exception:
         return False
 
 

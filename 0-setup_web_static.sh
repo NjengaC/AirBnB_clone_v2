@@ -5,12 +5,11 @@ sudo apt-get install -y nginx
 sudo mkdir -p /data/web_static/releases/test/
 sudo mkdir -p /data/web_static/shared/
 echo "<html>
-<head>
-	<title>Test Page</title>
-</head>
-<body>
-	<h1>This is a test page</h1>
-</body>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
 </html>" | sudo tee /data/web_static/releases/test/index.html
 
 if [ -L "/data/web_static/current" ]; then

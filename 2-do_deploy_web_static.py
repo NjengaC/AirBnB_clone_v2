@@ -3,58 +3,38 @@
 Fabric script that distributes an archive to your web servers
 """
 
-from datetime import datetime
-from fabric.api import *
+from fabric.api import env, put, run
 import os
-
-env.hosts = ['54.144.140.209', '34.202.233.3']
+env.hosts = ["54.144.140.209", "34.202.233.3"]
 env.user = 'ubuntu'
 
 
-def do_pack():
-    """
-        Return the archive path if archive has generated correctly.
-    """
-
-    local("mkdir -p versions")
-    date = datetime.now().strftime("%Y%m%d%H%M%S")
-    archived_f_path = "versions/web_static_{}.tgz".format(date)
-    t_gzip_archive = local("tar -cvzf {} web_static".format(archived_f_path))
-
-    if t_gzip_archive.succeeded:
-        return archived_f_path
-    else:
-        return None
-
-
 def do_deploy(archive_path):
-    """Distribute archive."""
+    """
+    Distributes an archive to your web servers
+    """
     if not os.path.exists(archive_path):
         return False
 
     try:
+        # Upload the archive to the /tmp/ directory of the web server
+        put(archive_path, '/tmp')
+
         archive_filename = os.path.basename(archive_path)
-        version_folder = "/data/web_static/releases/{}".format(
-            archive_filename[:-4])
+        folder_name = '/data/web_static/releases/' + archive_filename[:-4]
+        run('sudo mkdir -p {}'.format(folder_name))
+        run('sudo tar -xzf /tmp/{} -C {}'
+            .format(archive_filename, folder_name))
 
-        put(archive_path, "/tmp/")
+        # Delete the archive from the web server
+        run('sudo rm /tmp/{}'.format(archive_filename))
 
+        # Delete the symbolic link /data/web_static/current from the web server
+        run('sudo rm -rf /data/web_static/current')
 
-        run("sudo mkdir -p {}".format(version_folder))
-        run("sudo tar -xzf /tmp/{} -C {}/".
-            format(archive_filename, version_folder))
-        run("sudo rm /tmp/{}".format(archive_filename))
+        run('sudo ln -s {} /data/web_static/current'.format(folder_name))
 
-        run("sudo mv -f {}/web_static/* {}".
-            format(version_folder, version_folder))
-
-        run("sudo rm -rf {}/web_static".format(version_folder))
-
-        run("sudo rm -rf /data/web_static/current")
-
-        run("sudo ln -s {} /data/web_static/current".format(version_folder))
-
-        print("New version deployed!")
+        print('New version deployed!')
         return True
 
     except Exception:

@@ -7,8 +7,8 @@
 import os
 from fabric.api import *
 from datetime import datetime
-from 2-do_deploy_web_static import do_deploy
-from 1-pack_web_static import do_pack
+from dada import do_deploy
+from papa import do_pack
 
 env.hosts = ['54.144.140.209', '34.202.233.3']
 env.user = "ubuntu"

@@ -28,9 +28,6 @@ def do_deploy(archive_path):
             format(archive_filename, version_folder))
         run("sudo rm /tmp/{}".format(archive_filename))
 
-        run("sudo mv -f {}/web_static/* {}".
-            format(version_folder, version_folder))
-
         run("sudo rm -rf {}/web_static".format(version_folder))
 
         run("sudo rm -rf /data/web_static/current")

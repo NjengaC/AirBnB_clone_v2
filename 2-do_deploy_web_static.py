@@ -29,7 +29,9 @@ def do_deploy(archive_path):
         run("sudo rm /tmp/{}".format(archive_filename))
 
         run("sudo rm -rf {}/web_static".format(version_folder))
-
+        run("sudo mv -f {}/web_static/* {}".
+            format(version_folder, version_folder))
+        run("sudo rm -rf {}/web_static".format(version_folder))
         run("sudo rm -rf /data/web_static/current")
 
         run("sudo ln -s {} /data/web_static/current".format(version_folder))
@@ -37,5 +39,5 @@ def do_deploy(archive_path):
         print("New version deployed!")
         return True
 
-    except Exception:
+    except Exception as e:
         return False

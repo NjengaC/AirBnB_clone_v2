@@ -11,6 +11,7 @@ env.user = "ubuntu"
 env.key_filename = "~/.ssh/id_rsa"
 archive_path = None
 
+
 @runs_once
 def do_pack():
     """

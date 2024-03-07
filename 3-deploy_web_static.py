@@ -11,7 +11,7 @@ from datetime import datetime
 # Set the host IP addresses for web-01 && web-02
 env.hosts = ['54.144.140.209', '34.202.233.3']
 env.user = "ubuntu"
-
+archive_path = None
 
 def do_pack():
     """Create a tar gzipped archive of the directory web_static."""
@@ -58,7 +58,9 @@ def deploy():
     """
     Create and archive and get its path
     """
-    archive_path = do_pack()
+    global archive_path
+    if archive_path is None:
+        archive_path = do_pack()
     if archive_path is None:
         return False
     return do_deploy(archive_path)

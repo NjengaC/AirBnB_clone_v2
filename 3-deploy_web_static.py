@@ -13,6 +13,7 @@ env.hosts = ['54.144.140.209', '34.202.233.3']
 env.user = "ubuntu"
 archive_path = None
 
+
 def do_pack():
     """Create a tar gzipped archive of the directory web_static."""
     # obtain the current date and time

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-    Fabric script that distributes an archive to my web servers
+Fabric script that distributes an archive web servers
 """
 from fabric.api import *
 from fabric.operations import run, put, sudo
@@ -13,7 +13,7 @@ env.key_filename = '~/.ssh/id_rsa'
 
 def do_deploy(archive_path):
     """
-        using fabric to distribute archive
+    distributes an archive to web servers, using the function do_deploy
     """
     if os.path.isfile(archive_path) is False:
         return False
@@ -27,9 +27,6 @@ def do_deploy(archive_path):
         run("sudo tar -xzf /tmp/{} -C {}/{}/ --strip-components=1"
             .format(new_archive, path, folder[0]))
         run("sudo rm /tmp/{}".format(archive))
-#        run("sudo mv -f {}/{}/web_static/* {}/{}/"
-#            .format(path, folder[0], path, folder[0]))
-#        run("sudo rm -rf {}/{}/web_static".format(path, folder[0]))
         run("sudo rm -rf /data/web_static/current")
         run("sudo ln -sf {}/{} /data/web_static/current"
             .format(path, folder[0]))

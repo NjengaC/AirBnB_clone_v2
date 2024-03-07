@@ -1,4 +1,4 @@
-# Setup the web servers for the deployment of web_static
+# Manifest setsup the web servers for the deployment of web_static
 exec { '/usr/bin/env apt -y update' : }
 -> package { 'nginx':
   ensure => installed,

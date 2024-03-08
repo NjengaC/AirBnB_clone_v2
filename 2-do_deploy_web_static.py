@@ -2,13 +2,14 @@
 """
 Fabric script that distributes an archive web servers
 """
+from datetime import datetime
 from fabric.api import *
 from fabric.operations import run, put, sudo
 import os
 
-env.hosts = ['54.144.140.209', '34.202.233.3']
-env.user = 'ubuntu'
-env.key_filename = '~/.ssh/id_rsa'
+env.hosts = ["54.144.140.209", "34.202.233.3"]
+env.user = "ubuntu"
+env.key_filename = "~/.ssh/id_rsa"
 
 
 def do_deploy(archive_path):

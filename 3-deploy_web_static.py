@@ -9,7 +9,6 @@ import os
 env.hosts = ["54.144.140.209", "34.202.233.3"]
 env.user = "ubuntu"
 env.key_filename = "~/.ssh/id_rsa"
-archive_path = None
 
 
 @runs_once
@@ -41,7 +40,6 @@ def do_deploy(archive_path):
         path = "/data/web_static/releases"
         put("{}".format(archive_path), "/tmp/{}".format(archive))
         folder = archive.split(".")
-        run("sudo rm -rf {}/web*".format(path))
         run("sudo mkdir -p {}/{}/".format(path, folder[0]))
         new_archive = '.'.join(folder)
         run("sudo tar -xzf /tmp/{} -C {}/{}/ --strip-components=1"
@@ -60,9 +58,7 @@ def deploy():
     """
     Create and archive and get its path
     """
-    global archive_path
-    if archive_path is None:
-        archive_path = do_pack()
+    archive_path = do_pack()
     if archive_path is None:
         return False
     deploy_res = do_deploy(archive_path)

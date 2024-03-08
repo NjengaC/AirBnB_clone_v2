@@ -41,6 +41,7 @@ def do_deploy(archive_path):
         path = "/data/web_static/releases"
         put("{}".format(archive_path), "/tmp/{}".format(archive))
         folder = archive.split(".")
+        run("sudo rm -rf {}/web*".format(path))
         run("sudo mkdir -p {}/{}/".format(path, folder[0]))
         new_archive = '.'.join(folder)
         run("sudo tar -xzf /tmp/{} -C {}/{}/ --strip-components=1"

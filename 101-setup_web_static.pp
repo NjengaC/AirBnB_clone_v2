@@ -1,63 +1,86 @@
-# Manifest setsup the web servers for the deployment of web_static
-exec { '/usr/bin/env apt -y update' : }
--> package { 'nginx':
+# web_server_setup.pp
+
+# Install Nginx package
+package { 'nginx':
   ensure => installed,
 }
--> file { '/data':
-  ensure  => 'directory'
+
+# Create directory structure
+file { '/data':
+  ensure  => directory,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+  recurse => true,
 }
--> file { '/data/web_static':
-  ensure => 'directory'
+
+file { '/data/web_static':
+  ensure  => directory,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
 }
--> file { '/data/web_static/releases':
-  ensure => 'directory'
+
+file { '/data/web_static/releases':
+  ensure  => directory,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
 }
--> file { '/data/web_static/releases/test':
-  ensure => 'directory'
+
+file { '/data/web_static/shared':
+  ensure  => directory,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
 }
--> file { '/data/web_static/shared':
-  ensure => 'directory'
+
+file { '/data/web_static/releases/test':
+  ensure  => directory,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
 }
--> file { '/data/web_static/releases/test/index.html':
-  ensure  => 'present',
-  content => "<!DOCTYPE html>
-<html>
-  <head>
-  </head>
-  <body>
-    <p>Nginx server test</p>
-  </body>
-</html>"
+
+# Create a fake HTML file for testing
+file { '/data/web_static/releases/test/index.html':
+  ensure  => file,
+  content => '<html><body>This is a test HTML file</body></html>',
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
 }
--> file { '/data/web_static/current':
-  ensure => 'link',
-  target => '/data/web_static/releases/test'
+
+# Create symbolic link
+file { '/data/web_static/current':
+  ensure => link,
+  target => '/data/web_static/releases/test',
+  owner  => 'ubuntu',
+  group  => 'ubuntu',
+  force  => true,
 }
--> exec { 'chown -R ubuntu:ubuntu /data/':
-  path => '/usr/bin/:/usr/local/bin/:/bin/'
+
+# Update Nginx configuration
+file { '/etc/nginx/sites-available/default':
+  ensure  => file,
+  content => "
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location /hbnb_static/ {
+        alias /data/web_static/current/;
+    }
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
 }
--> file { '/var/www':
-  ensure => 'directory'
+",
+  notify => Service['nginx'],
 }
--> file { '/var/www/html':
-  ensure => 'directory'
-}
--> file { '/var/www/html/index.html':
-  ensure  => 'present',
-  content => "<!DOCTYPE html>
-<html>
-  <head>
-  </head>
-  <body>
-    <p>Nginx server test</p>
-  </body>
-</html>"
-}
-exec { 'nginx_conf':
-  environment => ['data=\ \tlocation /hbnb_static {\n\t\talias /data/web_static/current;\n\t}\n'],
-  command     => 'sed -i "39i $data" /etc/nginx/sites-enabled/default',
-  path        => '/usr/bin:/usr/sbin:/bin:/usr/local/bin'
-}
--> service { 'nginx':
+
+# Ensure Nginx service is running and enable on boot
+service { 'nginx':
   ensure => running,
+  enable => true,
 }

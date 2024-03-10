@@ -32,7 +32,7 @@ def do_pack():
     local("mv {} /tmp/".format(archive_path))
     path = "/data/web_static/releases"
     folder = archive.split(".")
-    local ("sudo mkdir -p /data/web_static/shared")
+    local("sudo mkdir -p /data/web_static/shared")
     local("sudo mkdir -p {}/{}/".format(path, folder[0]))
     new_archive = '.'.join(folder)
     local("sudo tar -xzf /tmp/{} -C {}/{}/ --strip-components=1"

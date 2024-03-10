@@ -62,5 +62,9 @@ def deploy():
     Create and archive and get its path
     """
     archive_path = do_pack()
+    local ("sudo mkdir -p /tmp/")
+    local ("tar -xzf {} -C /tmp/".format(archive_path))
+    local("rm -rf /data/web_static/current")
+    local("ln -s /tmp/web_static /data/web_static/current")
 
     return do_deploy(archive_path) if archive_path else False

@@ -21,12 +21,26 @@ def do_pack():
     now = datetime.now()
     file_name = "web_static_{}.tgz".format(now.strftime("%Y%m%d%H%M%S"))
 
-    result = local("tar -cvzf versions/{} web_static".format(file_name))
+    archive_path = local("tar -cvzf versions/{} web_static".format(file_name))
 
-    if result.succeeded:
+    if archive_path.succeeded:
         return "versions/{}".format(file_name)
     else:
         return None
+    local("sudo mkdir -p /tmp/")
+    archive = archive_path.split("/")[-1]
+    local("mv {} /tmp/".format(archive_path))
+    path = "/data/web_static/releases"
+    folder = archive.split(".")
+    local ("sudo mkdir -p /data/web_static/shared")
+    local("sudo mkdir -p {}/{}/".format(path, folder[0]))
+    new_archive = '.'.join(folder)
+    local("sudo tar -xzf /tmp/{} -C {}/{}/ --strip-components=1"
+          .format(new_archive, path, folder[0]))
+    local("sudo rm /tmp/{}".format(archive))
+    local("sudo rm -rf /data/web_static/current")
+    local("sudo ln -sf {}/{} /data/web_static/current"
+          .format(path, folder[0]))
 
 
 def do_deploy(archive_path):
@@ -52,6 +66,7 @@ def do_deploy(archive_path):
         run("sudo ln -sf {}/{} /data/web_static/current"
             .format(path, folder[0]))
         print("New version deployed!")
+
         return True
     except Exception:
         return False
@@ -62,9 +77,5 @@ def deploy():
     Create and archive and get its path
     """
     archive_path = do_pack()
-    local ("sudo mkdir -p /tmp/")
-    local ("tar -xzf {} -C /tmp/".format(archive_path))
-    local("rm -rf /data/web_static/current")
-    local("ln -s /tmp/web_static /data/web_static/current")
 
     return do_deploy(archive_path) if archive_path else False

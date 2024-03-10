@@ -2,7 +2,7 @@
 """ Fabric script to generate a .tgz archive from web_static """
 
 from datetime import datetime
-from fabric.api import *
+from fabric.api import env, local, put, run, runs_once
 from fabric.operations import run, put, sudo
 import os
 
@@ -42,9 +42,12 @@ def do_deploy(archive_path):
         folder = archive.split(".")
         run("sudo mkdir -p {}/{}/".format(path, folder[0]))
         new_archive = '.'.join(folder)
-        run("sudo tar -xzf /tmp/{} -C {}/{}/ --strip-components=1"
+        run("sudo tar -xzf /tmp/{} -C {}/{}/"
             .format(new_archive, path, folder[0]))
         run("sudo rm /tmp/{}".format(archive))
+        run("sudo mv {}/{}/web_static/* {}/{}"
+            .format(path, folder[0], path, folder[0]))
+        run("sudo rm -rf {}/{}/web_static".format(path, folder[0]))
         run("sudo rm -rf /data/web_static/current")
         run("sudo ln -sf {}/{} /data/web_static/current"
             .format(path, folder[0]))
@@ -60,4 +63,4 @@ def deploy():
     """
     archive_path = do_pack()
 
-    return do_deploy(archive_path)
+    return do_deploy(archive_path) if archive_path else False

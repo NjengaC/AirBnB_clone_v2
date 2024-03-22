@@ -10,7 +10,7 @@ app.url_map.strict_slashes = False
 
 
 @app.teardown_appcontext
-def close_db(exc):
+def app_teardown(arg=None):    
     """close the current session of sqlalchemist"""
     storage.close()
 

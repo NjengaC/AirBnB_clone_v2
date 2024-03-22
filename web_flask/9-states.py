@@ -1,44 +1,35 @@
 #!/usr/bin/python3
 """
-This is Module Documentation- starts a Flask web application
-
+Starts a Flask web application.
 """
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
 from models import storage
 from models.state import State
-from models.city import City
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 
 
 @app.teardown_appcontext
-def teardown_db(exception):
-    """Remove the current SQLAlchemy Session"""
+def close_db(exc):
+    """close the current session"""
     storage.close()
 
 
-@app.route('/states', strict_slashes=False)
-@app.route('/states/<id>', strict_slashes=False)
-def states_id(id=None):
-    """
-    Displays page with a list of States objects or state with it
-    cities if id is present
-    """
-    states = storage.all('State').values()
-    states_list_dicts = [state.to_dict() for state in states]
-    sorted_states = sorted(states_list_dicts, key=lambda state: state['name'])
-    if id is None:
-        return render_template("9-states.html", states=sorted_states)
-    else:
-        states_wth_cities = []
-        for state in sorted_states:
-            cities = storage.all(City).values()
-#            state_dict = state.to_dict()
-            ctys = [city.to_dict() for city in cities if city.state_id == state.id]
-            sorted_cities = sorted(ctys, key=lambda city: city['name'])
-            state_dict['cities'] = sorted_cities
-            states_wth_cities.append(state_dict)
-            return render_template("9-states.html", states=states_wth_cities)
+@app.route("/states")
+def states():
+    """Displays page with a list of all States """
+    states = storage.all(State)
+    return render_template("9-states.html", state=states)
 
 
-if __name__ == '__main__':
+@app.route("/states/<id>")
+def states_id(id):
+    """Display page with state and its cities if id is passes """
+    for state in storage.all(State).values():
+        if state.id == id:
+            return render_template("9-states.html", state=state)
+    return render_template("9-states.html")
+
+
+if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

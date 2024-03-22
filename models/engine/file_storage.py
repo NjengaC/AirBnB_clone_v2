@@ -29,15 +29,18 @@ class FileStorage:
             returns a dictionary of __object
         """
         all_return = {}
-        if cls:
-            if cls.__name__ in self.all_classes:
-                for key, val in self.__objects.items():
-                    if key.split('.')[0] == cls.__name__:
-                        all_return.update({key: val})
-        else:
-            all_return = self.__objects
+        if cls is not None:
+            if type(cls) == str:
+                cls = eval(cls)
+            cls_dict = {}
 
-        return all_return
+            for key, val in self.__objects.items():
+                if type(val) == cls:
+                    cls_dict[key] = val
+
+            return cls_dict
+
+        return self.__objects
 
     def new(self, obj):
         """sets __object to given obj

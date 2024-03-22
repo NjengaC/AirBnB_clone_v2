@@ -46,7 +46,6 @@ class DBStorage():
                 dictionary[k] = item
             return dictionary
         else:
-            print("No class found")
             alll = [State, City, User, Place, Review, Amenity]
             for i in alll:
                 query = self.__session.query(i)

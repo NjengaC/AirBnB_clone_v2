@@ -1,29 +1,34 @@
 #!/usr/bin/python3
-"""Start web application with two routings
 """
-
+Starts a Flask web application.
+"""
+from flask import Flask, render_template, abort
 from models import storage
 from models.state import State
-from flask import Flask, render_template
 app = Flask(__name__)
 
 
-@app.route('/states', strict_slashes=False)
-@app.route('/states/<id>', strict_slashes=False)
-def states_list(id=None):
-    """Render template with states
-    """
-    path = '9-states.html'
-    states = storage.all(State)
-    return render_template(path, states=states, id=id)
-
-
 @app.teardown_appcontext
-def app_teardown(arg=None):
-    """Clean-up session
-    """
+def app_teardown(error):
+    """close the current session"""
     storage.close()
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+@app.route("/states", strict_slashes=False)
+def states():
+    """Displays page with a list of all States """
+    states = storage.all(State)
+    return render_template("9-states.html", state=states)
+
+
+@app.route("/states/<id>", strict_slashes=False)
+def states_id(id):
+    """Display page with state and its cities if id is passes """
+    for state in storage.all(State).values():
+        if state.id == id:
+            return render_template("9-states.html", state=state)
+    return render_template("9-states.html")
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)

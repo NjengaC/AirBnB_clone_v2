@@ -1,19 +1,22 @@
 #!/usr/bin/python3
-"""Script starts a Flask web application"""
+"""
+This is 7-states_list.py Module Documentation
 
+"""
 from flask import Flask, render_template
 from models import storage
 from models.state import State
-from models.city import City
+from sqlalchemy.orm import sessionmaker, scoped_session
+
 app = Flask(__name__)
 
 
-@app.route('/cities_by_states', strict_slashes=False)
-def cities_by_states():
-    """Display a list of all State objects with their cities"""
+@app.route('/states_list', strict_slashes=False)
+def states_list():
+    """Display a list of all State objects"""
     states = storage.all(State).values()
-    states_sorted = sorted(states, key=lambda x: x.name)
-    return render_template('8-cities_by_states.html', states=states_sorted)
+    states_sorted = sorted(states, key=lambda s: s.name)
+    return render_template('7-states_list.html', states=states_sorted)
 
 
 @app.teardown_appcontext

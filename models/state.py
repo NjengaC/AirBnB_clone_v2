@@ -27,5 +27,5 @@ class State(BaseModel, Base):
                 lists.append(curr[key])
         for lis in lists:
             if (lis.state_id == self.id):
-                result.append(lis)
+                res.append(lis)
         return (res)

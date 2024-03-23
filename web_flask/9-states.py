@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 @app.teardown_appcontext
-def app_teardown(exception, error):
+def teardown_db(exception):
     """Closes the current session"""
     storage.close()
 

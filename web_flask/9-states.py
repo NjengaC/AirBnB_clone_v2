@@ -12,9 +12,7 @@ app = Flask(__name__)
 
 @app.teardown_appcontext
 def app_teardown(exception):
-    """
-    Closes the current session
-    """
+    """Closes the current session"""
     storage.close()
 
 

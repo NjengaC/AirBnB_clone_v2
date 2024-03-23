@@ -30,7 +30,7 @@ def states_id(id):
     """
     Display page with state and its cities if id is passes
     """
-    for state in storage.all('State').values():
+    for state in storage.all(State).values():
         if state.id == id:
             return render_template("9-states.html", state=state)
     return render_template("9-states.html")

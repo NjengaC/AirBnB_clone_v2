@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 @app.teardown_appcontext
-def app_teardown(exception):
+def app_teardown(arg=None):
     """Closes the current session"""
     storage.close()
 
@@ -21,7 +21,7 @@ def _states():
     """
     Displays page with a list of all States
     """
-    states = storage.all(State)
+    states = storage.all('State')
     return render_template("9-states.html", state=states)
 
 

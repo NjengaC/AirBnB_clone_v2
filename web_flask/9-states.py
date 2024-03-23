@@ -7,7 +7,7 @@ from models import storage
 from models.state import State
 from models.city import City
 app = Flask(__name__)
-app.url_map.strict_slashes = False
+# app.url_map.strict_slashes = False
 
 
 @app.teardown_appcontext
@@ -16,7 +16,7 @@ def app_teardown(arg=None):
     storage.close()
 
 
-@app.route('/states')
+@app.route('/states', strict_slashes=False)
 def _states():
     """
     Displays page with a list of all States
@@ -25,7 +25,7 @@ def _states():
     return render_template("9-states.html", state=states)
 
 
-@app.route('/states/<string:id>')
+@app.route('/states/<string:id>', strict_slashes=False)
 def states_id(id):
     """
     Display page with state and its cities if id is passes

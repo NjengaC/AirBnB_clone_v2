@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 @app.teardown_appcontext
-def app_teardown():
+def app_teardown(arg=None):
     """Closes the current session"""
     storage.close()
 

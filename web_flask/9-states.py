@@ -5,18 +5,18 @@ Starts a Flask web application.
 from flask import Flask, render_template, abort
 from models import storage
 from models.state import State
-from models.city import City
-
+# from models.city import City
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 
 
 @app.teardown_appcontext
 def app_teardown(arg=None):
-    """close the current session"""
+    """close the current session """
     storage.close()
 
 
-@app.route("/states", strict_slashes=False)
+@app.route('/states')
 def _states():
     """
     Displays page with a list of all States
@@ -25,9 +25,11 @@ def _states():
     return render_template("9-states.html", state=states)
 
 
-@app.route("/states/<id>", strict_slashes=False)
+@app.route('/states/<string:id>')
 def states_id(id):
-    """Display page with state and its cities if id is passes """
+    """
+    Display page with state and its cities if id is passes
+    """
     for state in storage.all(State).values():
         if state.id == id:
             return render_template("9-states.html", state=state)

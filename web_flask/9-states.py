@@ -21,7 +21,7 @@ def _states():
     """
     Displays page with a list of all States
     """
-    states = storage.all('State')
+    states = storage.all(State)
     return render_template("9-states.html", state=states)
 
 

@@ -8,8 +8,8 @@ from flask import Flask
 app = Flask(__name__)
 
 
-# Route to display "Hello HBNB!"
-@app.route('/', strict_slashes=False)
+# Route to display "Hello HBNB!
+@app.route('/airbnb-onepage/', strict_slashes=False)
 def hello_hbnb():
     """
     This is hello_hbnb Function Documentation

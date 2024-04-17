@@ -67,6 +67,7 @@ def number_temp(n):
 
 
 # Route to display a HTML page ONLY if n is an integer"
+@app.route('/airbnb-dynamic/number_odd_or_even/<int:n>')
 @app.route('/number_odd_or_even/<int:n>', strict_slashes=False)
 def number_odd_or_even(n):
     """
